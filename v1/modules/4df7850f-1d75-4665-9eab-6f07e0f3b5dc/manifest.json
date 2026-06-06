@@ -24,6 +24,6 @@
   "entry_assembly": "WKOpenVR.SyntheticFaceModule.dll",
   "entry_type": "WKOpenVR.SyntheticFaceModule.SyntheticFaceModule",
   "dependencies": [],
-  "payload_sha256": "374ccd8a4328742815c41286a74a773e52569b33ff9dcd4581d4553351459211",
-  "payload_size": 268250
+  "payload_sha256": "48eccaf09206ca11364eafbb4add086ec816c001b1ed2fc22bb5287f0e458ff0",
+  "payload_size": 269106
 }
