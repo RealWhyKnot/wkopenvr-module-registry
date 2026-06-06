@@ -1,0 +1,67 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Registry artifact version without leading v
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    name: package
+    runs-on: windows-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.x'
+
+      - name: Build tagged registry artifact
+        shell: pwsh
+        env:
+          TAG_NAME: ${{ github.ref_name }}
+          INPUT_VERSION: ${{ inputs.version }}
+        run: |
+          $version = $env:INPUT_VERSION
+          if ([string]::IsNullOrWhiteSpace($version)) {
+            $version = $env:TAG_NAME -replace '^v', ''
+          }
+          if ([string]::IsNullOrWhiteSpace($version)) { throw "Release version is empty." }
+
+          .\build.ps1 -Version $version
+
+          $releaseDir = "release"
+          if (Test-Path -LiteralPath $releaseDir) { Remove-Item -Recurse -Force -LiteralPath $releaseDir }
+          New-Item -ItemType Directory -Force -Path $releaseDir | Out-Null
+
+          $stage = Join-Path $releaseDir "wkopenvr-module-registry-v$version"
+          New-Item -ItemType Directory -Force -Path $stage | Out-Null
+          Copy-Item -Recurse -Path "v1" -Destination (Join-Path $stage "v1")
+          Copy-Item -Path "_headers", "_redirects" -Destination $stage
+
+          $zip = Join-Path $releaseDir "wkopenvr-module-registry-v$version.zip"
+          Compress-Archive -Path (Join-Path $stage "*") -DestinationPath $zip -Force
+          $hash = (Get-FileHash -LiteralPath $zip -Algorithm SHA256).Hash
+          Write-Host "Registry artifact: $zip sha256=$hash"
+
+      - name: Upload registry artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: wkopenvr-module-registry-${{ github.ref_name }}
+          path: release/*.zip
+          if-no-files-found: error

@@ -11,10 +11,11 @@ def repo_root() -> Path:
 
 
 def version_key(value: str) -> tuple:
-    parts = value.split(".")
+    numeric, separator, suffix = value.partition("-")
+    parts = numeric.split(".")
     if all(part.isdigit() for part in parts):
-        return tuple(int(part) for part in parts)
-    return (value,)
+        return (tuple(int(part) for part in parts), 0 if separator else 1, suffix)
+    return ((-1,), 0, value)
 
 
 def main() -> int:
