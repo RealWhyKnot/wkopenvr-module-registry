@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "uuid": "4df7850f-1d75-4665-9eab-6f07e0f3b5dc",
+  "name": "WKOpenVR Synthetic Face Module",
+  "vendor": "WhyKnot",
+  "homepage": "https://github.com/whyknotdev/WKOpenVR.SyntheticFaceModule",
+  "license": "GPL-3.0-only",
+  "version": "0.1.0",
+  "sdk_version": "0.1.0",
+  "min_host_version": "1.0",
+  "supported_hmds": [
+    "*"
+  ],
+  "capabilities": [
+    "expression",
+    "audio"
+  ],
+  "platforms": [
+    "windows-x64"
+  ],
+  "module_kind": "wkopenvr-native",
+  "module_api": "WKOpenVR.FaceTracking.Sdk/0.1.0",
+  "sdk_package": "WKOpenVR.FaceTracking.Sdk",
+  "entry_assembly": "WKOpenVR.SyntheticFaceModule.dll",
+  "entry_type": "WKOpenVR.SyntheticFaceModule.SyntheticFaceModule",
+  "dependencies": [],
+  "payload_sha256": "374ccd8a4328742815c41286a74a773e52569b33ff9dcd4581d4553351459211",
+  "payload_size": 268250
+}

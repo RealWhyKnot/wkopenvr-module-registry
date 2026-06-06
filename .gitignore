@@ -1,0 +1,5 @@
+artifacts/
+incoming/*
+!incoming/.gitkeep
+*.tmp
+*.log

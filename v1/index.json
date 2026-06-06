@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "generated_at": "2026-06-06T00:00:00Z",
+  "modules": [
+    {
+      "uuid": "4df7850f-1d75-4665-9eab-6f07e0f3b5dc",
+      "name": "WKOpenVR Synthetic Face Module",
+      "vendor": "WhyKnot",
+      "version": "0.1.0",
+      "capabilities": [
+        "expression",
+        "audio"
+      ],
+      "platforms": [
+        "windows-x64"
+      ],
+      "module_kind": "wkopenvr-native",
+      "sdk_version": "0.1.0"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+# Static host rewrites: extensionless URLs expected by WKOpenVR map to files on disk.
+
+/v1/index                                             /v1/index.json                                             200
+/v1/modules/:uuid/manifest                            /v1/modules/:uuid/manifest.json                            200
+/v1/modules/:uuid/versions/:version/manifest          /v1/modules/:uuid/versions/:version/manifest.json          200
+/v1/modules/:uuid/versions/:version/payload           /v1/modules/:uuid/versions/:version/payload.zip            200
