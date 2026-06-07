@@ -18,6 +18,25 @@ def version_key(value: str) -> tuple:
     return ((-1,), 0, value)
 
 
+def is_prerelease(value: str) -> bool:
+    return "-" in value
+
+
+def latest_version(versions: list[Path], include_prerelease: bool = False) -> Path:
+    candidates = [v for v in versions if include_prerelease or not is_prerelease(v.name)]
+    if not candidates:
+        candidates = versions
+    return max(candidates, key=lambda p: version_key(p.name))
+
+
+def copy_fields(manifest: dict, fields: tuple[str, ...]) -> dict:
+    result = {}
+    for field in fields:
+        if field in manifest:
+            result[field] = manifest[field]
+    return result
+
+
 def main() -> int:
     root = repo_root()
     modules_dir = root / "v1" / "modules"
@@ -29,20 +48,54 @@ def main() -> int:
             (p for p in versions_dir.iterdir() if p.is_dir()),
             key=lambda p: version_key(p.name),
         )
-        latest = versions[-1]
+        latest = latest_version(versions, include_prerelease=False)
         manifest = json.loads((latest / "manifest.json").read_text(encoding="utf-8"))
-        modules.append(
-            {
-                "uuid": manifest["uuid"],
-                "name": manifest["name"],
-                "vendor": manifest["vendor"],
-                "version": manifest["version"],
-                "capabilities": manifest["capabilities"],
-                "platforms": manifest["platforms"],
-                "module_kind": manifest.get("module_kind", "wkopenvr-native"),
-                "sdk_version": manifest["sdk_version"],
-            }
+
+        version_entries: list[dict] = []
+        for version_dir in sorted(versions, key=lambda p: version_key(p.name), reverse=True):
+            version_manifest = json.loads((version_dir / "manifest.json").read_text(encoding="utf-8"))
+            version_entry = copy_fields(
+                version_manifest,
+                (
+                    "version",
+                    "sdk_version",
+                    "module_api",
+                    "payload_url",
+                    "payload_sha256",
+                    "payload_size",
+                    "release_tag",
+                    "release_url",
+                ),
+            )
+            version_entry["release_channel"] = "beta" if is_prerelease(version_manifest["version"]) else "stable"
+            version_entry["prerelease"] = is_prerelease(version_manifest["version"])
+            version_entries.append(version_entry)
+
+        entry = copy_fields(
+            manifest,
+            (
+                "uuid",
+                "name",
+                "vendor",
+                "description",
+                "homepage",
+                "version",
+                "sdk_version",
+                "capabilities",
+                "platforms",
+                "module_kind",
+                "payload_url",
+                "payload_sha256",
+                "payload_size",
+                "release_tag",
+                "release_url",
+            ),
         )
+        entry["latest"] = manifest["version"]
+        entry["release_channel"] = "beta" if is_prerelease(manifest["version"]) else "stable"
+        entry["prerelease"] = is_prerelease(manifest["version"])
+        entry["versions"] = version_entries
+        modules.append(entry)
 
     index = {
         "schema": 1,

@@ -8,8 +8,8 @@ This registry is separate from `wkvrcft-legacy-registry`. It serves modules buil
 
 | URL | Returns |
 |---|---|
-| `/v1/index` | Latest native module list |
-| `/v1/modules/<uuid>/manifest` | Latest module manifest JSON |
+| `/v1/index` | Native module list with default latest metadata and version entries |
+| `/v1/modules/<uuid>/manifest` | Default latest module manifest JSON |
 | `/v1/modules/<uuid>/versions/<ver>/manifest` | Pinned version manifest |
 | `/v1/modules/<uuid>/versions/<ver>/payload` | Module zip |
 
@@ -23,4 +23,4 @@ The validator checks manifest fields, native metadata, payload SHA-256, latest m
 
 ## Publication
 
-No script in this repository publishes to a public host. Publication requires an explicit separate action.
+Tagged releases publish a registry snapshot zip to GitHub Releases. Hosting the static registry remains a separate deployment step.

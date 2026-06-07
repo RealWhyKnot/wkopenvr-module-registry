@@ -53,6 +53,17 @@ def version_key(value: str) -> tuple:
     return ((-1,), 0, value)
 
 
+def is_prerelease(value: str) -> bool:
+    return "-" in value
+
+
+def latest_version(versions: dict[str, dict], include_prerelease: bool = False) -> str:
+    candidates = [v for v in versions if include_prerelease or not is_prerelease(v)]
+    if not candidates:
+        candidates = list(versions)
+    return max(candidates, key=version_key)
+
+
 def validate_manifest(path: Path, expected_uuid: str, expected_version: str) -> dict:
     manifest = read_json(path)
 
@@ -109,7 +120,7 @@ def validate_version(version_dir: Path, uuid: str) -> dict:
     return manifest
 
 
-def validate_index(expected_latest: list[dict]) -> None:
+def validate_index(expected_modules: list[dict]) -> None:
     index_path = repo_root() / "v1" / "index.json"
     if not index_path.exists():
         fail(f"{index_path}: missing")
@@ -119,16 +130,36 @@ def validate_index(expected_latest: list[dict]) -> None:
     if not isinstance(index.get("modules"), list):
         fail(f"{index_path}: modules must be an array")
 
-    expected_by_uuid = {m["uuid"]: m for m in expected_latest}
+    expected_by_uuid = {m["latest"]["uuid"]: m for m in expected_modules}
     actual_by_uuid = {m.get("uuid"): m for m in index["modules"]}
     if set(expected_by_uuid) != set(actual_by_uuid):
         fail(f"{index_path}: module list does not match v1/modules")
 
-    for uuid, manifest in expected_by_uuid.items():
+    for uuid, record in expected_by_uuid.items():
+        manifest = record["latest"]
         entry = actual_by_uuid[uuid]
-        for field in ("uuid", "name", "vendor", "version", "capabilities", "platforms", "module_kind", "sdk_version"):
+        for field in ("uuid", "name", "vendor", "version", "capabilities", "platforms", "module_kind", "sdk_version", "payload_sha256", "payload_size"):
             if entry.get(field) != manifest.get(field):
                 fail(f"{index_path}: module {uuid} field {field} is stale")
+        if entry.get("latest") != manifest.get("version"):
+            fail(f"{index_path}: module {uuid} latest is stale")
+        if entry.get("prerelease") != is_prerelease(manifest.get("version", "")):
+            fail(f"{index_path}: module {uuid} prerelease is stale")
+
+        actual_versions = entry.get("versions")
+        if not isinstance(actual_versions, list):
+            fail(f"{index_path}: module {uuid} versions must be an array")
+        actual_by_version = {v.get("version"): v for v in actual_versions}
+        expected_versions = record["versions"]
+        if set(actual_by_version) != set(expected_versions):
+            fail(f"{index_path}: module {uuid} versions list is stale")
+        for version, version_manifest in expected_versions.items():
+            actual_version = actual_by_version[version]
+            for field in ("version", "sdk_version", "module_api", "payload_sha256", "payload_size"):
+                if actual_version.get(field) != version_manifest.get(field):
+                    fail(f"{index_path}: module {uuid} version {version} field {field} is stale")
+            if actual_version.get("prerelease") != is_prerelease(version):
+                fail(f"{index_path}: module {uuid} version {version} prerelease is stale")
 
 
 def main() -> int:
@@ -137,7 +168,7 @@ def main() -> int:
     if not modules_dir.exists():
         fail(f"{modules_dir}: missing")
 
-    latest_manifests: list[dict] = []
+    expected_modules: list[dict] = []
     for uuid_dir in sorted(p for p in modules_dir.iterdir() if p.is_dir()):
         versions_dir = uuid_dir / "versions"
         if not versions_dir.exists():
@@ -150,16 +181,16 @@ def main() -> int:
         if not versions:
             fail(f"{uuid_dir}: no versions")
 
-        latest_version = max(versions.keys(), key=version_key)
-        latest_manifest = versions[latest_version]
+        latest = latest_version(versions, include_prerelease=False)
+        latest_manifest = versions[latest]
         latest_path = uuid_dir / "manifest.json"
         if not latest_path.exists():
             fail(f"{uuid_dir}: missing latest manifest")
         if read_json(latest_path) != latest_manifest:
             fail(f"{latest_path}: latest manifest does not match latest version")
-        latest_manifests.append(latest_manifest)
+        expected_modules.append({"latest": latest_manifest, "versions": versions})
 
-    validate_index(latest_manifests)
+    validate_index(expected_modules)
     print("Registry validation passed")
     return 0
 

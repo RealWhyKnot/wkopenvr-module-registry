@@ -12,7 +12,7 @@ on:
         type: string
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   package:
@@ -32,9 +32,11 @@ jobs:
           python-version: '3.x'
 
       - name: Build tagged registry artifact
+        id: package
         shell: pwsh
         env:
           TAG_NAME: ${{ github.ref_name }}
+          REF_TYPE: ${{ github.ref_type }}
           INPUT_VERSION: ${{ inputs.version }}
         run: |
           $version = $env:INPUT_VERSION
@@ -42,6 +44,9 @@ jobs:
             $version = $env:TAG_NAME -replace '^v', ''
           }
           if ([string]::IsNullOrWhiteSpace($version)) { throw "Release version is empty." }
+          if ($version -match '-beta' -and $version -notmatch '^\d{4}\.\d+\.\d+\.\d+-beta$') {
+            throw "Beta versions must use YYYY.M.D.N-beta."
+          }
 
           .\build.ps1 -Version $version
 
@@ -56,8 +61,27 @@ jobs:
 
           $zip = Join-Path $releaseDir "wkopenvr-module-registry-v$version.zip"
           Compress-Archive -Path (Join-Path $stage "*") -DestinationPath $zip -Force
-          $hash = (Get-FileHash -LiteralPath $zip -Algorithm SHA256).Hash
+          $hash = (Get-FileHash -LiteralPath $zip -Algorithm SHA256).Hash.ToLowerInvariant()
           Write-Host "Registry artifact: $zip sha256=$hash"
+
+          $notes = @(
+            "WKOpenVR native module registry snapshot.",
+            "",
+            "Checksums:",
+            "$(Split-Path -Leaf $zip) sha256=$hash"
+          ) -join "`n"
+          $notesPath = Join-Path $env:RUNNER_TEMP "release-notes.md"
+          [System.IO.File]::WriteAllText($notesPath, $notes, (New-Object System.Text.UTF8Encoding($false)))
+          $isBeta = $version -match '-beta$'
+          $tag = $env:TAG_NAME
+          if ($env:REF_TYPE -ne "tag") {
+            $tag = "v$version"
+          }
+
+          "version=$version" >> $env:GITHUB_OUTPUT
+          "tag=$tag" >> $env:GITHUB_OUTPUT
+          "notes_path=$notesPath" >> $env:GITHUB_OUTPUT
+          "is_beta=$($isBeta.ToString().ToLowerInvariant())" >> $env:GITHUB_OUTPUT
 
       - name: Upload registry artifact
         uses: actions/upload-artifact@v7
@@ -65,3 +89,19 @@ jobs:
           name: wkopenvr-module-registry-${{ github.ref_name }}
           path: release/*.zip
           if-no-files-found: error
+
+      - name: Publish GitHub release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_NAME: ${{ steps.package.outputs.tag }}
+          IS_BETA: ${{ steps.package.outputs.is_beta }}
+          NOTES_PATH: ${{ steps.package.outputs.notes_path }}
+        run: |
+          $assets = @(Get-ChildItem -Path "release" -Filter "*.zip" | ForEach-Object { $_.FullName })
+          if ($assets.Count -eq 0) { throw "No release assets found." }
+
+          $extra = @()
+          if ($env:IS_BETA -eq "true") { $extra = @("--prerelease", "--latest=false") }
+
+          gh release create $env:TAG_NAME --title $env:TAG_NAME --notes-file $env:NOTES_PATH @extra @assets
