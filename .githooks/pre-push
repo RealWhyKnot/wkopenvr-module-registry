@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Pre-push guard: validate the static registry (manifest fields, payload SHA-256,
+# latest pointer, index coherence) so a broken registry never reaches CI or the
+# live site. Skips gracefully when Python is not installed.
+# Bypass in an emergency: git push --no-verify
+set -uo pipefail
+
+repo_root="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
+[ -f "$repo_root/scripts/validate.py" ] || exit 0
+
+py=""
+for c in python python3 py; do
+  if command -v "$c" >/dev/null 2>&1; then py="$c"; break; fi
+done
+if [ -z "$py" ]; then
+  echo "pre-push: python not found; skipping registry validation." >&2
+  exit 0
+fi
+
+echo "pre-push: validating registry (scripts/validate.py)..." >&2
+"$py" "$repo_root/scripts/validate.py"
+if [ "$?" -ne 0 ]; then
+  echo "pre-push BLOCKED: registry validation failed; fix the manifests/index before pushing. Bypass: git push --no-verify" >&2
+  exit 1
+fi
+exit 0
