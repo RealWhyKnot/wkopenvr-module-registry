@@ -23,4 +23,4 @@ The validator checks manifest fields, native metadata, payload SHA-256, latest m
 
 ## Publication
 
-Tagged releases publish a registry snapshot zip to GitHub Releases. Hosting the static registry remains a separate deployment step.
+The registry is served as a static Cloudflare Pages site. Tagged GitHub releases are not used for registry distribution.
