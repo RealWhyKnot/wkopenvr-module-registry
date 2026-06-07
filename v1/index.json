@@ -1,31 +1,44 @@
 {
   "schema": 1,
-  "generated_at": "2026-06-07T20:37:29Z",
+  "generated_at": "2026-06-07T22:22:26Z",
   "modules": [
     {
       "uuid": "4df7850f-1d75-4665-9eab-6f07e0f3b5dc",
       "name": "WKOpenVR Synthetic Face Module",
       "vendor": "WhyKnot",
       "homepage": "https://github.com/RealWhyKnot/WKOpenVR.SyntheticFaceModule",
-      "version": "2026.6.7.0-beta",
-      "sdk_version": "2026.6.7.0-beta",
+      "version": "2026.6.7.1-beta",
+      "sdk_version": "2026.6.7.1-beta",
       "capabilities": [
         "expression",
-        "audio"
+        "audio",
+        "eye"
       ],
       "platforms": [
         "windows-x64"
       ],
       "module_kind": "wkopenvr-native",
-      "payload_url": "https://github.com/RealWhyKnot/WKOpenVR.SyntheticFaceModule/releases/download/v2026.6.7.0-beta/WKOpenVR.SyntheticFaceModule.2026.6.7.0-beta.zip",
-      "payload_sha256": "27a1cc76d6f437a1bd90bdd525d7583a9ab6afb782c061fced0ad2dba6294344",
-      "payload_size": 269511,
-      "release_tag": "v2026.6.7.0-beta",
-      "release_url": "https://github.com/RealWhyKnot/WKOpenVR.SyntheticFaceModule/releases/tag/v2026.6.7.0-beta",
-      "latest": "2026.6.7.0-beta",
+      "payload_url": "https://github.com/RealWhyKnot/WKOpenVR.SyntheticFaceModule/releases/download/v2026.6.7.1-beta/WKOpenVR.SyntheticFaceModule.2026.6.7.1-beta.zip",
+      "payload_sha256": "cfbcfee8441a4d7beee7ea19ddf6bb347495db0e3b0e208f3bb00d23eb337da8",
+      "payload_size": 4792954,
+      "release_tag": "v2026.6.7.1-beta",
+      "release_url": "https://github.com/RealWhyKnot/WKOpenVR.SyntheticFaceModule/releases/tag/v2026.6.7.1-beta",
+      "latest": "2026.6.7.1-beta",
       "release_channel": "beta",
       "prerelease": true,
       "versions": [
+        {
+          "version": "2026.6.7.1-beta",
+          "sdk_version": "2026.6.7.1-beta",
+          "module_api": "WKOpenVR.FaceTracking.Sdk/2026.6.7.1-beta",
+          "payload_url": "https://github.com/RealWhyKnot/WKOpenVR.SyntheticFaceModule/releases/download/v2026.6.7.1-beta/WKOpenVR.SyntheticFaceModule.2026.6.7.1-beta.zip",
+          "payload_sha256": "cfbcfee8441a4d7beee7ea19ddf6bb347495db0e3b0e208f3bb00d23eb337da8",
+          "payload_size": 4792954,
+          "release_tag": "v2026.6.7.1-beta",
+          "release_url": "https://github.com/RealWhyKnot/WKOpenVR.SyntheticFaceModule/releases/tag/v2026.6.7.1-beta",
+          "release_channel": "beta",
+          "prerelease": true
+        },
         {
           "version": "2026.6.7.0-beta",
           "sdk_version": "2026.6.7.0-beta",
