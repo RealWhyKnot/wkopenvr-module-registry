@@ -24,9 +24,12 @@ REQUIRED_MANIFEST_FIELDS = {
     "entry_assembly": str,
     "entry_type": str,
     "dependencies": list,
+    "payload_url": str,
     "payload_sha256": str,
     "payload_size": int,
 }
+
+REGISTRY_BASE_URL = "https://wkopenvr-module-registry.whyknot.dev"
 
 
 def repo_root() -> Path:
@@ -99,6 +102,12 @@ def validate_manifest(path: Path, expected_uuid: str, expected_version: str) -> 
     if "expression" not in manifest["capabilities"]:
         fail(f"{path}: capabilities must include expression")
 
+    expected_payload_url = (
+        f"{REGISTRY_BASE_URL}/v1/modules/{expected_uuid}/versions/{expected_version}/payload"
+    )
+    if manifest["payload_url"] != expected_payload_url:
+        fail(f"{path}: payload_url must be {expected_payload_url}")
+
     return manifest
 
 
@@ -138,7 +147,7 @@ def validate_index(expected_modules: list[dict]) -> None:
     for uuid, record in expected_by_uuid.items():
         manifest = record["latest"]
         entry = actual_by_uuid[uuid]
-        for field in ("uuid", "name", "vendor", "version", "capabilities", "platforms", "module_kind", "sdk_version", "payload_sha256", "payload_size"):
+        for field in ("uuid", "name", "vendor", "version", "capabilities", "platforms", "module_kind", "sdk_version", "payload_url", "payload_sha256", "payload_size"):
             if entry.get(field) != manifest.get(field):
                 fail(f"{index_path}: module {uuid} field {field} is stale")
         if entry.get("latest") != manifest.get("version"):
@@ -155,7 +164,7 @@ def validate_index(expected_modules: list[dict]) -> None:
             fail(f"{index_path}: module {uuid} versions list is stale")
         for version, version_manifest in expected_versions.items():
             actual_version = actual_by_version[version]
-            for field in ("version", "sdk_version", "module_api", "payload_sha256", "payload_size"):
+            for field in ("version", "sdk_version", "module_api", "payload_url", "payload_sha256", "payload_size"):
                 if actual_version.get(field) != version_manifest.get(field):
                     fail(f"{index_path}: module {uuid} version {version} field {field} is stale")
             if actual_version.get("prerelease") != is_prerelease(version):

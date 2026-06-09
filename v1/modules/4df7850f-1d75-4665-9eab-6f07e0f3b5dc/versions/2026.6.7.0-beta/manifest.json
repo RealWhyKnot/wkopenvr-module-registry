@@ -28,7 +28,7 @@
   "release_url": "https://github.com/RealWhyKnot/WKOpenVR.SyntheticFaceModule/releases/tag/v2026.6.7.0-beta",
   "release_channel": "beta",
   "prerelease": true,
-  "payload_url": "https://github.com/RealWhyKnot/WKOpenVR.SyntheticFaceModule/releases/download/v2026.6.7.0-beta/WKOpenVR.SyntheticFaceModule.2026.6.7.0-beta.zip",
+  "payload_url": "https://wkopenvr-module-registry.whyknot.dev/v1/modules/4df7850f-1d75-4665-9eab-6f07e0f3b5dc/versions/2026.6.7.0-beta/payload",
   "payload_sha256": "27a1cc76d6f437a1bd90bdd525d7583a9ab6afb782c061fced0ad2dba6294344",
   "payload_size": 269511
 }
