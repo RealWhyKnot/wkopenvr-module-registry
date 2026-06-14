@@ -65,10 +65,10 @@ def main() -> int:
                     "payload_size",
                     "release_tag",
                     "release_url",
+                    "release_channel",
+                    "prerelease",
                 ),
             )
-            version_entry["release_channel"] = "beta" if is_prerelease(version_manifest["version"]) else "stable"
-            version_entry["prerelease"] = is_prerelease(version_manifest["version"])
             version_entries.append(version_entry)
 
         entry = copy_fields(
@@ -89,11 +89,11 @@ def main() -> int:
                 "payload_size",
                 "release_tag",
                 "release_url",
+                "release_channel",
+                "prerelease",
             ),
         )
         entry["latest"] = manifest["version"]
-        entry["release_channel"] = "beta" if is_prerelease(manifest["version"]) else "stable"
-        entry["prerelease"] = is_prerelease(manifest["version"])
         entry["versions"] = version_entries
         modules.append(entry)
 
