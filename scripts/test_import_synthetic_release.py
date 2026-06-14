@@ -92,7 +92,16 @@ def main() -> int:
             raise AssertionError("Importer did not force beta prerelease metadata.")
 
         index = json.loads((work / "v1" / "index.json").read_text(encoding="utf-8"))
-        version_entry = index["modules"][0]["versions"][0]
+        version_entry = next(
+            (
+                entry
+                for entry in index["modules"][0]["versions"]
+                if entry["version"] == "2026.6.9.0-beta"
+            ),
+            None,
+        )
+        if version_entry is None:
+            raise AssertionError("Imported version was not added to the rebuilt index.")
         if version_entry["version"] != "2026.6.9.0-beta":
             raise AssertionError("Imported version was not added to the rebuilt index.")
         if version_entry["release_channel"] != "beta" or version_entry["prerelease"] is not True:
