@@ -1,14 +1,14 @@
 {
   "schema": 1,
-  "generated_at": "2026-06-14T00:56:36Z",
+  "generated_at": "2026-06-15T11:36:53Z",
   "modules": [
     {
       "uuid": "4df7850f-1d75-4665-9eab-6f07e0f3b5dc",
       "name": "WKOpenVR Synthetic Face Module",
       "vendor": "WhyKnot",
       "homepage": "https://github.com/RealWhyKnot/WKOpenVR.SyntheticFaceModule",
-      "version": "2026.6.14.0-beta",
-      "sdk_version": "2026.6.14.0-beta",
+      "version": "2026.6.15.0-beta",
+      "sdk_version": "2026.6.15.0-beta",
       "capabilities": [
         "expression",
         "audio",
@@ -18,15 +18,27 @@
         "windows-x64"
       ],
       "module_kind": "wkopenvr-native",
-      "payload_url": "https://wkopenvr-module-registry.whyknot.dev/v1/modules/4df7850f-1d75-4665-9eab-6f07e0f3b5dc/versions/2026.6.14.0-beta/payload",
-      "payload_sha256": "4a72fa55ffba2954d0780ba044c5babaee5f5065e6fa4aae2d65b91c186b1d47",
-      "payload_size": 4910111,
-      "release_tag": "v2026.6.14.0-beta",
-      "release_url": "https://github.com/RealWhyKnot/WKOpenVR.SyntheticFaceModule/releases/tag/v2026.6.14.0-beta",
+      "payload_url": "https://wkopenvr-module-registry.whyknot.dev/v1/modules/4df7850f-1d75-4665-9eab-6f07e0f3b5dc/versions/2026.6.15.0-beta/payload",
+      "payload_sha256": "219997ecdcaf2b3dd778ccce62ba04c69b35b515cde5ccc78fa8a8e94ebe3457",
+      "payload_size": 4793531,
+      "release_tag": "v2026.6.15.0-beta",
+      "release_url": "https://github.com/RealWhyKnot/WKOpenVR.SyntheticFaceModule/releases/tag/v2026.6.15.0-beta",
       "release_channel": "beta",
       "prerelease": true,
-      "latest": "2026.6.14.0-beta",
+      "latest": "2026.6.15.0-beta",
       "versions": [
+        {
+          "version": "2026.6.15.0-beta",
+          "sdk_version": "2026.6.15.0-beta",
+          "module_api": "WKOpenVR.FaceTracking.Sdk/2026.6.15.0-beta",
+          "payload_url": "https://wkopenvr-module-registry.whyknot.dev/v1/modules/4df7850f-1d75-4665-9eab-6f07e0f3b5dc/versions/2026.6.15.0-beta/payload",
+          "payload_sha256": "219997ecdcaf2b3dd778ccce62ba04c69b35b515cde5ccc78fa8a8e94ebe3457",
+          "payload_size": 4793531,
+          "release_tag": "v2026.6.15.0-beta",
+          "release_url": "https://github.com/RealWhyKnot/WKOpenVR.SyntheticFaceModule/releases/tag/v2026.6.15.0-beta",
+          "release_channel": "beta",
+          "prerelease": true
+        },
         {
           "version": "2026.6.14.0-beta",
           "sdk_version": "2026.6.14.0-beta",
