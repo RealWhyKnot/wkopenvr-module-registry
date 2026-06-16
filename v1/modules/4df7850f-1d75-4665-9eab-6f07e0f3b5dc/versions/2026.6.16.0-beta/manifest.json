@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "uuid": "4df7850f-1d75-4665-9eab-6f07e0f3b5dc",
+  "name": "WKOpenVR Synthetic Face Module",
+  "vendor": "WhyKnot",
+  "homepage": "https://github.com/RealWhyKnot/WKOpenVR.SyntheticFaceModule",
+  "license": "GPL-3.0-only",
+  "version": "2026.6.16.0-beta",
+  "sdk_version": "2026.6.16.0-beta",
+  "min_host_version": "1.0",
+  "supported_hmds": [
+    "*"
+  ],
+  "capabilities": [
+    "expression",
+    "audio",
+    "eye"
+  ],
+  "platforms": [
+    "windows-x64"
+  ],
+  "module_kind": "wkopenvr-native",
+  "module_api": "WKOpenVR.FaceTracking.Sdk/2026.6.16.0-beta",
+  "sdk_package": "WKOpenVR.FaceTracking.Sdk",
+  "entry_assembly": "WKOpenVR.SyntheticFaceModule.dll",
+  "entry_type": "WKOpenVR.SyntheticFaceModule.SyntheticFaceModule",
+  "dependencies": [],
+  "release_tag": "v2026.6.16.0-beta",
+  "release_url": "https://github.com/RealWhyKnot/WKOpenVR.SyntheticFaceModule/releases/tag/v2026.6.16.0-beta",
+  "release_channel": "beta",
+  "prerelease": true,
+  "payload_url": "https://wkopenvr-module-registry.whyknot.dev/v1/modules/4df7850f-1d75-4665-9eab-6f07e0f3b5dc/versions/2026.6.16.0-beta/payload",
+  "payload_sha256": "c755af9d8c0a17653cf8a87383f721bbc3294a9a8c3100f96d5259568231b01a",
+  "payload_size": 4793522
+}
